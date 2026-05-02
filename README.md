@@ -1,20 +1,5 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+Codex_Runner is a high-energy, web-based endless runner game built with Next.js. Set in a vibrant "cyber-grid" environment, the game challenges players to navigate through obstacles while leveraging the power of the Gemini API for dynamic content or logic integration.
 
-# Run and deploy your AI Studio app
+It is designed to be fast, responsive, and easily deployable via Vercel, offering a seamless arcade-style experience directly in the browser.
 
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/4545e6d1-e366-4621-b392-468efc959e53
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+# [Play Codex Runner Here!](https://codex-runner-ruddy.vercel.app/)
