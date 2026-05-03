@@ -182,7 +182,7 @@ export const useStore = create<GameState>((set, get) => ({
                   set({ hasDoubleJump: true });
                   break;
               case 'MAX_LIFE':
-                  set({ maxLives: maxLives + 1, lives: lives + 1 });
+                  set({ lives: maxLives });
                   break;
               case 'HEAL':
                   set({ lives: Math.min(lives + 1, maxLives) });

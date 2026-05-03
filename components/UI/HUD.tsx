@@ -198,7 +198,7 @@ const CreatorScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
                         <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full max-w-sm mb-6 md:mb-8">
                             <a 
-                                href="https://app.joinhandshake.com/profiles/qy9443" 
+                                href="https://app.joinhandshake.com/profiles/ta27" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="group relative flex-1 inline-flex items-center justify-center px-5 py-2.5 md:py-3 bg-transparent border-2 border-cyan-500 text-cyan-400 font-bold text-xs rounded-full hover:bg-cyan-500 hover:text-black transition-all duration-300 shadow-[0_0_10px_rgba(0,255,255,0.15)] hover:shadow-[0_0_20px_rgba(0,255,255,0.4)] tracking-[0.1em] uppercase touch-manipulation"
@@ -258,15 +258,6 @@ const PauseScreen: React.FC = () => {
                 >
                     QUIT TO MAIN MENU
                 </button>
-
-                <div className="flex justify-center pt-4">
-                    <button 
-                        onClick={() => setStatus(GameStatus.CREATOR)}
-                        className="w-12 h-12 flex items-center justify-center bg-white/5 backdrop-blur-md border border-white/10 rounded-full hover:bg-white/10 hover:border-cyan-500/50 transition-all text-white/70 hover:text-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.1)] group"
-                    >
-                        <CuttlefishIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                    </button>
-                </div>
             </div>
         </div>
     );
@@ -347,7 +338,7 @@ export const HUD: React.FC = () => {
                     </span>
                 </button>
 
-                <p className="text-cyan-400/60 text-sm md:text-base font-mono tracking-[0.3em] uppercase animate-pulse">
+                <p className="text-cyan-400/60 text-[10px] min-[375px]:text-xs md:text-base font-mono tracking-[0.2em] md:tracking-[0.3em] uppercase animate-pulse text-center px-4">
                     [ ARROWS / SWIPE TO MOVE ]
                 </p>
               </div>
@@ -446,46 +437,46 @@ export const HUD: React.FC = () => {
   return (
     <div className={containerClass}>
         {/* Top Bar */}
-        <div className="flex justify-between items-start w-full">
+        <div className="flex justify-between items-start w-full relative">
             <div className="flex flex-col">
-                <div className="text-3xl md:text-5xl font-bold text-cyan-400 drop-shadow-[0_0_10px_#00ffff] font-cyber">
+                <div className="text-2xl min-[375px]:text-3xl md:text-5xl font-bold text-cyan-400 drop-shadow-[0_0_10px_#00ffff] font-cyber">
                     {score.toLocaleString()}
                 </div>
             </div>
             
-            <div className="flex items-center space-x-4">
+            {/* Level Indicator - Absolute positioned but responsive spacing */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-[10px] min-[375px]:text-xs md:text-lg text-purple-300 font-bold tracking-wider font-mono bg-black/50 px-2 py-0.5 md:px-3 md:py-1 rounded-full border border-purple-500/30 backdrop-blur-sm whitespace-nowrap">
+                LVL {level} <span className="text-gray-500 text-[8px] md:text-sm">/ 3</span>
+            </div>
+
+            <div className="flex items-center space-x-2 md:space-x-4">
                 <div className="flex space-x-1 md:space-x-2">
                     {[...Array(maxLives)].map((_, i) => (
                         <Heart 
                             key={i} 
-                            className={`w-6 h-6 md:w-8 md:h-8 ${i < lives ? 'text-pink-500 fill-pink-500' : 'text-gray-800 fill-gray-800'} drop-shadow-[0_0_5px_#ff0054]`} 
+                            className={`w-4 h-4 min-[375px]:w-6 min-[375px]:h-6 md:w-8 md:h-8 ${i < lives ? 'text-pink-500 fill-pink-500' : 'text-gray-800 fill-gray-800'} drop-shadow-[0_0_5px_#ff0054]`} 
                         />
                     ))}
                 </div>
 
                 <button 
                     onClick={() => setStatus(GameStatus.PAUSED)}
-                    className="p-2 md:p-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-full hover:bg-white/10 text-white/70 hover:text-white pointer-events-auto transition-all"
+                    className="p-1.5 md:p-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-full hover:bg-white/10 text-white/70 hover:text-white pointer-events-auto transition-all"
                 >
-                    <Pause className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" />
+                    <Pause className="w-4 h-4 md:w-6 md:h-6" fill="currentColor" />
                 </button>
             </div>
         </div>
         
-        {/* Level Indicator - Moved to Top Center aligned with Score/Hearts */}
-        <div className="absolute top-5 left-1/2 transform -translate-x-1/2 text-sm md:text-lg text-purple-300 font-bold tracking-wider font-mono bg-black/50 px-3 py-1 rounded-full border border-purple-500/30 backdrop-blur-sm z-50">
-            LEVEL {level} <span className="text-gray-500 text-xs md:text-sm">/ 3</span>
-        </div>
-
         {/* Active Skill Indicator */}
         {isImmortalityActive && (
-             <div className="absolute top-24 left-1/2 transform -translate-x-1/2 text-yellow-400 font-bold text-xl md:text-2xl animate-pulse flex items-center drop-shadow-[0_0_10px_gold]">
-                 <Shield className="mr-2 fill-yellow-400" /> IMMORTAL
+             <div className="absolute top-20 md:top-24 left-1/2 transform -translate-x-1/2 text-yellow-400 font-bold text-lg md:text-2xl animate-pulse flex items-center drop-shadow-[0_0_10px_gold]">
+                 <Shield className="mr-2 fill-yellow-400 w-5 h-5 md:w-6 md:h-6" /> IMMORTAL
              </div>
         )}
 
         {/* Level Collection Status - Just below Top Bar */}
-        <div className="absolute top-16 md:top-24 left-1/2 transform -translate-x-1/2 flex space-x-2 md:space-x-3">
+        <div className="absolute top-12 min-[375px]:top-16 md:top-24 left-1/2 transform -translate-x-1/2 flex space-x-1 md:space-x-3 w-full justify-center px-4">
             {target.map((char, idx) => {
                 const isCollected = collectedLetters.includes(idx);
                 const color = LETTER_COLORS[char] || '#ffffff';

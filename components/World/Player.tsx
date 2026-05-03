@@ -6,6 +6,7 @@
 
 import React, { useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Outlines } from '@react-three/drei';
 import * as THREE from 'three';
 import { useStore } from '../../store';
 import { LANE_WIDTH, GameStatus } from '../../types';
@@ -38,7 +39,7 @@ export const Player: React.FC = () => {
   const rightLegRef = useRef<THREE.Group>(null);
   const headRef = useRef<THREE.Group>(null);
 
-  const { status, laneCount, takeDamage, hasDoubleJump, activateImmortality, isImmortalityActive } = useStore();
+  const { status, laneCount, takeDamage, hasDoubleJump, activateImmortality, isImmortalityActive, setStatus } = useStore();
   
   const [lane, setLane] = React.useState(0);
   const targetX = useRef(0);
@@ -61,10 +62,26 @@ export const Player: React.FC = () => {
       const glowColor = isImmortalityActive ? '#ffffff' : '#00ffff';
       
       return {
-          armorMaterial: new THREE.MeshStandardMaterial({ color: armorColor, roughness: 0.3, metalness: 0.8 }),
-          jointMaterial: new THREE.MeshStandardMaterial({ color: '#111111', roughness: 0.7, metalness: 0.5 }),
-          glowMaterial: new THREE.MeshBasicMaterial({ color: glowColor }),
-          shadowMaterial: new THREE.MeshBasicMaterial({ color: '#000000', opacity: 0.3, transparent: true })
+          armorMaterial: new THREE.MeshStandardMaterial({ 
+              color: armorColor, 
+              roughness: 0.3, 
+              metalness: 0.8,
+              emissive: armorColor,
+              emissiveIntensity: 0.5
+          }),
+          jointMaterial: new THREE.MeshStandardMaterial({ 
+              color: '#111111', 
+              roughness: 0.7, 
+              metalness: 0.5 
+          }),
+          glowMaterial: new THREE.MeshBasicMaterial({ 
+              color: glowColor 
+          }),
+          shadowMaterial: new THREE.MeshBasicMaterial({ 
+              color: '#000000', 
+              opacity: 0.3, 
+              transparent: true 
+          })
       };
   }, [isImmortalityActive]); // Only recreate if immortality state changes (for color shift)
 
@@ -109,7 +126,19 @@ export const Player: React.FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Handle Pause (ESC) - works in both PLAYING and PAUSED states
+      if (e.key === 'Escape') {
+          if (status === GameStatus.PLAYING) {
+              setStatus(GameStatus.PAUSED);
+              return;
+          } else if (status === GameStatus.PAUSED) {
+              setStatus(GameStatus.PLAYING);
+              return;
+          }
+      }
+
       if (status !== GameStatus.PLAYING) return;
+      
       const maxLane = Math.floor(laneCount / 2);
 
       if (e.key === 'ArrowLeft') setLane(l => Math.max(l - 1, -maxLane));
@@ -122,7 +151,7 @@ export const Player: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [status, laneCount, hasDoubleJump, activateImmortality]);
+  }, [status, laneCount, hasDoubleJump, activateImmortality, setStatus]);
 
   useEffect(() => {
     const handleTouchStart = (e: TouchEvent) => {
@@ -278,47 +307,72 @@ export const Player: React.FC = () => {
 
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Player Aura Light */}
+      <pointLight 
+        position={[0, 1, 0]} 
+        intensity={isImmortalityActive ? 1.5 : 0.8} 
+        distance={3} 
+        color={isImmortalityActive ? "#ffd700" : "#00ffff"} 
+        decay={2}
+      />
+      
       <group ref={bodyRef} position={[0, 1.1, 0]}> 
         
         {/* Torso */}
-        <mesh castShadow position={[0, 0.2, 0]} geometry={TORSO_GEO} material={armorMaterial} />
+        <mesh castShadow position={[0, 0.2, 0]} geometry={TORSO_GEO} material={armorMaterial}>
+            <Outlines color="#00ffff" thickness={0.03} />
+        </mesh>
 
         {/* Jetpack */}
-        <mesh position={[0, 0.2, -0.2]} geometry={JETPACK_GEO} material={jointMaterial} />
+        <mesh position={[0, 0.2, -0.2]} geometry={JETPACK_GEO} material={jointMaterial}>
+            <Outlines color="#00ffff" thickness={0.03} />
+        </mesh>
         <mesh position={[-0.08, 0.1, -0.28]} geometry={GLOW_STRIP_GEO} material={glowMaterial} />
         <mesh position={[0.08, 0.1, -0.28]} geometry={GLOW_STRIP_GEO} material={glowMaterial} />
 
         {/* Head */}
         <group ref={headRef} position={[0, 0.6, 0]}>
-            <mesh castShadow geometry={HEAD_GEO} material={armorMaterial} />
+            <mesh castShadow geometry={HEAD_GEO} material={armorMaterial}>
+                <Outlines color="#00ffff" thickness={0.03} />
+            </mesh>
         </group>
 
         {/* Arms */}
         <group position={[0.32, 0.4, 0]}>
             <group ref={rightArmRef}>
-                <mesh position={[0, -0.25, 0]} castShadow geometry={ARM_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.25, 0]} castShadow geometry={ARM_GEO} material={armorMaterial}>
+                    <Outlines color="#00ffff" thickness={0.03} />
+                </mesh>
                 <mesh position={[0, -0.55, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
             </group>
         </group>
         <group position={[-0.32, 0.4, 0]}>
             <group ref={leftArmRef}>
-                 <mesh position={[0, -0.25, 0]} castShadow geometry={ARM_GEO} material={armorMaterial} />
+                 <mesh position={[0, -0.25, 0]} castShadow geometry={ARM_GEO} material={armorMaterial}>
+                    <Outlines color="#00ffff" thickness={0.03} />
+                 </mesh>
                  <mesh position={[0, -0.55, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
             </group>
         </group>
 
         {/* Hips */}
-        <mesh position={[0, -0.15, 0]} geometry={HIPS_GEO} material={jointMaterial} />
+        <mesh position={[0, -0.15, 0]} geometry={HIPS_GEO} material={jointMaterial}>
+            <Outlines color="#00ffff" thickness={0.03} />
+        </mesh>
 
         {/* Legs */}
         <group position={[0.12, -0.25, 0]}>
             <group ref={rightLegRef}>
-                 <mesh position={[0, -0.35, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                 <mesh position={[0, -0.35, 0]} castShadow geometry={LEG_GEO} material={armorMaterial}>
+                    <Outlines color="#00ffff" thickness={0.03} />
+                 </mesh>
             </group>
         </group>
         <group position={[-0.12, -0.25, 0]}>
             <group ref={leftLegRef}>
-                 <mesh position={[0, -0.35, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                 <mesh position={[0, -0.35, 0]} castShadow geometry={LEG_GEO} material={armorMaterial}>
+                    <Outlines color="#00ffff" thickness={0.03} />
+                 </mesh>
             </group>
         </group>
       </group>
